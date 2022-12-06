@@ -1,31 +1,96 @@
+"""
+This file focuses primarily on using the Distance Matrix API.
+Refer to the link below for details and an overview of how it works.
+https://developers.google.com/maps/documentation/distance-matrix/overview
+
+"""
 import requests     # Allows us to make HTTP requests to Google maps
 
-# Securely read the API key
-api_file = open("api-key.txt", "r")
-api_key = api_file.readline()
-api_file.close()
+"""
+Given two addresses, computes the walking time between them.
+The address should typically follow the parameter of:
+    1313 Disneyland Dr, Anaheim, CA 92802
+    [Street #] [Street Name], [City], [State Initials] [Zip Code]
 
-# Starting address
-starting_point = "Disneyland"
-starting_point = starting_point.replace(" ", "+")
-# Destination address
-destination_point = "Universal studios"
-destination_point = destination_point.replace(" ", "+")
+    This includes spacing and comma, but slight variations in syntax
+    should be acceptable in some cases.
 
-# Base URL for accessing distance matrix API
-# Mode is already set to walking
-url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&mode=walking&"
+@input:     addressA        - starting address
+            addressB        - destination address
+@output:    URL link to the JSON-formatted result
+@return:    walking_time    - Time in minutes it takes to walk between the two addresses
+"""
+def address_walking_time(addressA, addressB):
+    # Securely read the API key
+    api_file = open("api-key.txt", "r")
+    api_key = api_file.readline()
+    api_file.close()
 
-# Get response
-url_test = url + "origins=" + starting_point + "&destinations=" + destination_point + "&key=" + api_key
+    # Starting address
+    starting_point = addressA.replace(" ", "+")
 
-print(url_test)
-r = requests.get(url + "origins=" + starting_point + "&destinations=" +
-                 destination_point + "&key=" + api_key)
+    # Destination address
+    destination_point = addressB.replace(" ", "+")
 
-# return time as text and seconds
-time = r.json()["rows"][0]["elements"][0]["duration"]["text"]
-seconds = r.json()["rows"][0]["elements"][0]["duration"]["value"]
+    # Base URL for accessing distance matrix API. Already set to walking directions
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&mode=walking&"
+    url_test = url + "origins=" + starting_point + "&destinations=" + destination_point + "&key=" + api_key
+    print(url_test)
 
-# Print the travel time
-print("\nThe total travel time from starting point to destination is", time)
+    # Sends a Get request to Google Maps API server
+    r = requests.get(url + "origins=" + starting_point + "&destinations=" +
+                    destination_point + "&key=" + api_key)
+
+    # return time as text and seconds
+    walking_time = r.json()["rows"][0]["elements"][0]["duration"]["text"]
+    seconds = r.json()["rows"][0]["elements"][0]["duration"]["value"]
+
+    # Print the time
+    output_time(addressA, addressB, walking_time)
+
+    return walking_time
+
+"""
+Given two stations, computes the walking time between them.
+"""
+def station_walking_time(stationA, stationB):
+    # Securely read the API key
+    api_file = open("api-key.txt", "r")
+    api_key = api_file.readline()
+    api_file.close()
+
+    # Starting address
+    starting_point = stationA.replace(" ", "+")
+
+    # Destination address
+    destination_point = stationB.replace(" ", "+")
+
+    # Base URL for accessing distance matrix API. Already set to walking directions
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&mode=walking&"
+    url_test = url + "origins=" + starting_point + "&destinations=" + destination_point + "&key=" + api_key
+    print(url_test)
+
+    # Sends a Get request to Google Maps API server
+    r = requests.get(url + "origins=" + starting_point + "&destinations=" +
+                    destination_point + "&key=" + api_key)
+
+    # return time as text and seconds
+    walking_time = r.json()["rows"][0]["elements"][0]["duration"]["text"]
+    seconds = r.json()["rows"][0]["elements"][0]["duration"]["value"]
+
+    # Print the time
+    output_time(stationA, stationB, walking_time)
+
+    return walking_time
+
+def output_time(origin, destination, time):
+    print(origin + "   =====>   " + destination + "    " + time +"\n")
+
+# Test cases
+def main():
+    address_walking_time_test_A = address_walking_time("1761 15th St, Troy, NY 12180",
+                                                        "124 4th St, Troy, NY 12180")
+    station_walking_time_test_A = station_walking_time("Astor Pl",
+                                                        "Canal St")
+
+main()
