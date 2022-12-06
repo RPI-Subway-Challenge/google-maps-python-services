@@ -60,10 +60,12 @@ def station_walking_time(stationA, stationB):
     api_file.close()
 
     # Starting address
+    starting_point = stationA + " station"
     starting_point = stationA.replace(" ", "+")
 
     # Destination address
-    destination_point = stationB.replace(" ", "+")
+    destination_point = stationB + " station"
+    destination_point= stationB.replace(" ", "+")
 
     # Base URL for accessing distance matrix API. Already set to walking directions
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&mode=walking&"
@@ -88,8 +90,11 @@ def output_time(origin, destination, time):
 
 # Test cases
 def main():
+    ### ADDRESS TEST CASES ###
     address_walking_time_test_A = address_walking_time("1761 15th St, Troy, NY 12180",
                                                         "124 4th St, Troy, NY 12180")
+
+    ### STATION TEST CASES ###
     station_walking_time_test_A = station_walking_time("Astor Pl",
                                                         "Canal St")
 
