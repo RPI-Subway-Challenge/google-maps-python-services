@@ -71,11 +71,13 @@ def station_walking_time(stationA, stationB):
     api_file.close()
 
     # Starting address parsing
-    starting_point = stationA + " station new york"
+    starting_point = stationA + " station"
+    starting_point = starting_point.replace("St", "Street")
     starting_point = starting_point.replace(" ", "+")
 
     # Destination address parsing
-    destination_point = stationB + " station subway new york"
+    destination_point = stationB + " station"
+    destination_point = destination_point.replace("St", "Street")
     destination_point= destination_point.replace(" ", "+")
 
     # Base URL for accessing distance matrix API. Already set to walking directions!
@@ -106,6 +108,7 @@ def main():
                                                         "124 4th St, Troy, NY 12180")
 
     ### STATION TEST CASES ###
+    # NOTE: "36th Street" should be in Queens, but the code treats it as Brooklyn
     stations = ["Astor Pl", "Canal St", "50th St", "Bergen St", "Pennsylvania Ave",
                 "238th St", "Cathedral Pkwy", "Kingston - Throop Aves", "65th St",
                 "36th St", "Delancey St - Essex St", "Van Siclen Ave", "Norwood Ave"]
